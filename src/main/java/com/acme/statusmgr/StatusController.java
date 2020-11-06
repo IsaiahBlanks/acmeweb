@@ -1,8 +1,10 @@
 package com.acme.statusmgr;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.acme.statusmgr.beans.ServerStatus;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +36,9 @@ public class StatusController {
 
     
     @RequestMapping("/status")
-    public ServerStatus greeting(@RequestParam(value="name", defaultValue="Anonymous") String name) {
+    public ServerStatus getServerStatus(@RequestParam(value="name", defaultValue="Anonymous") String name,
+                                        @RequestParam(value="details", required = false) List<String> details) {
+        System.out.println("***DEBUG INFO ***" + details);
         return new ServerStatus(counter.incrementAndGet(),
                             String.format(template, name));
     }
