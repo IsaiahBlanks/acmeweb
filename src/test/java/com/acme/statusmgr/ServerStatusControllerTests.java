@@ -15,6 +15,7 @@
  */
 package com.acme.statusmgr;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -56,15 +57,16 @@ public class ServerStatusControllerTests {
     public void missingDetailsListShouldReturnBadRequestErrorMessage() throws Exception {
         this.mockMvc.perform(get("/server/status/detailed")).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .value("Required List parameter 'details' is not present in request"));
+                .andExpect(status().reason(is("Required List parameter 'details' is not present in request")));
     }
 
     @Test
     public void operationsDetailShouldReturnOperatingStatusMessage() throws Exception {
-        this.mockMvc.perform(get("/server/status/detailed").param("details", "operations"))
+        this.mockMvc.perform(get("/server/status/detailed")
+                .param("details", "operations"))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusDesc").value("Server Status requested by Anonymous"));
+                .andExpect(jsonPath("$.contentHeader").value("Server Status requested by Anonymous"))
+                .andExpect(jsonPath("$.statusDesc").value("Server is up, and is operating normally"));
     }
 
     @Test
@@ -149,7 +151,6 @@ public class ServerStatusControllerTests {
                 .param("details", "operations")
                 .param("details", "junkERROR"))
                 .andDo(print()).andExpect(status().isBadRequest())
-                .andExpect(jsonPath(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .value("Invalid details option: junkERROR"));
+                .andExpect(status().reason(is("Invalid details option: junkERROR")));
     }
 }

@@ -2,12 +2,16 @@ package com.acme.statusmgr.beans;
 
 import com.acme.servermgr.ServerManager;
 
+import java.util.List;
+
 /**
  * A POJO that represents Server Status and can be used to generate JSON for that status
+ * This class provides the basic implementation of a ServerStatus which can then be decorated
+ * by the ServerStatusDecorator with other ServerStatus types
  */
-public class ServerStatus {
+public class ServerStatusImpl implements ServerStatusInterface{
 
-    private  long id;
+    private long id;
     private String contentHeader;
     private String statusDesc = "Unknown";
 
@@ -19,7 +23,7 @@ public class ServerStatus {
      * @param id                a numeric identifier/counter of which request this
      * @param contentHeader     info about the request
      */
-    public ServerStatus(long id, String contentHeader) {
+    public ServerStatusImpl(long id, String contentHeader) {
         this.id = id;
         this.contentHeader = contentHeader;
 
@@ -27,23 +31,20 @@ public class ServerStatus {
         this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
     }
 
-    public ServerStatus() {
+    public ServerStatusImpl() {
 
     }
 
+    @Override
     public long getId() {
         return id;
     }
 
-    public String getContentHeader() {
+    @Override
+    public String getContentHeader() { return contentHeader; }
 
-        return contentHeader;
-    }
-
-
+    @Override
     public String getStatusDesc() {
         return statusDesc;
     }
-
-
 }
